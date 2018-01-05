@@ -24,7 +24,7 @@ function setup_env() {
 
     get_platform
     get_os_version
-    get_retropie_depends
+    #get_retropie_depends
 
     __gcc_version=$(gcc -dumpversion)
 
@@ -152,7 +152,7 @@ function get_os_version() {
              __os_ubuntu_ver="$__os_release"
             ;;
         *)
-            error="Unsupported OS"
+            #error="Unsupported OS"
             ;;
     esac
     
