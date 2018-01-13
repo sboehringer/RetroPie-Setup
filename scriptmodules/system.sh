@@ -61,6 +61,14 @@ function setup_env() {
     fi
 }
 
+function opensuse_functions_define {
+	# assume call dpkg-query -W  -W --showformat='${Status} ${Version}' package
+	function dpkg-query() {
+		PACKAGE=$3
+		zypper info $PACKAGE | perl -MData::Dumper -e '%m = ( "Ja" => "ok installed", "Yes" => "ok installed"); while(<>){ $k{$1}=$2 if (/(\S+)\s+:\s+(\S+)/) }; print "$m{$k{Installiert}.$k{Installed}} $k{Version}"'
+	}
+}
+
 function get_os_version() {
     # make sure lsb_release is installed
     getDepends lsb-release
@@ -77,6 +85,7 @@ function get_os_version() {
 		__os_desc="${os[1]}"
 		__os_release="${os[-2]}"
 		__os_codename="${os[-4]}"
+		opensuse_functions_define
 	else
 		mapfile -t os < <(lsb_release -sidrc)
 		__os_id="${os[0]}"
@@ -166,8 +175,10 @@ function get_os_version() {
         neon)
              __os_ubuntu_ver="$__os_release"
             ;;
-        *)
-            #error="Unsupported OS"
+		openSUSE)
+			;;
+		*)
+            error="Unsupported OS"
             ;;
     esac
     

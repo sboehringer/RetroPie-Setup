@@ -184,11 +184,28 @@ function aptRemove() {
     return $?
 }
 
+#
+#	getDepends
+#
+
 ## @fn getDepends()
 ## @param packages package / space separated list of packages to install
 ## @brief Installs packages if they are not installed.
 ## @retval 0 on success
 ## @retval 1 on failure
+
+# bootstrap os version, no lsb-release yet
+os_id_bs=`cat /etc/os-release | perl -ne 'print $1 if (m{^ID=(.*)})'`
+#echo "installing version of getDepends for $os_id_bs"
+
+if [[ "$os_id_bs" == "opensuse" ]]; then
+
+function getDepends() {
+	echo "getDepends for openSUSE"
+}
+
+else
+
 function getDepends() {
     local required
     local packages=()
@@ -296,6 +313,7 @@ function getDepends() {
     return 0
 }
 
+fi	# if for getDepends version
 
 ## @fn rpSwap()
 ## @param command *on* to add swap if needed and *off* to remove later
