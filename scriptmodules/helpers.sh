@@ -200,8 +200,46 @@ os_id_bs=`cat /etc/os-release | perl -ne 'print $1 if (m{^ID=(.*)})'`
 
 if [[ "$os_id_bs" == "opensuse" ]]; then
 
+function zypperInstall() {
+	zypper install -y "$@"
+	return $?
+}
+
 function getDepends() {
-	echo "getDepends for openSUSE"
+	local packages=()
+	declare -A substitutions
+	substitutions=( \
+		["g++"]="gcc-c++" \
+		["d"]="ignore" \
+		["build-essential"]="cmake make autoconf automake" \
+		["libudev-dev"]="libudev-devel" \
+		["libxkbcommon-dev"]="libxkbcommon-devel" \
+		["libasound2"]="alsa-devel" \
+		["libsdl2-dev"]="libSDL2-devel" \
+		["libusb-1.0-0-dev"]="libusb-1_0-devel" \
+		["libx11-xcb-dev"]="libX11-devel" \
+		["libpulse-dev"]="libpulse-devel" \
+		["libavcodec-dev"]="libavcodec-devel" \
+		["libavformat-dev"]="libavformat-devel" \
+		["libavdevice-dev"]="libavdevice-devel" \
+		# dh-autoreconf libdbus-c++-devel libXcursor-devel ibus-devel
+	)
+
+	for p in $@; do
+		if [[ "${substitutions[$p]}" = "" ]]; then
+			packages+=( $p )
+		else
+		if  [[ "${substitutions[$p]}" != "ignore" ]]; then
+			# auto-split seems to happen
+			packages+=( ${substitutions[$p]} )
+		fi
+		fi
+    done
+
+	for p in ${packages[@]}; do
+		echo Installing package $p [opensuse]
+		zypperInstall $p
+	done
 }
 
 else
