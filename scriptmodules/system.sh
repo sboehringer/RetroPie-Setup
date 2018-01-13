@@ -68,6 +68,13 @@ function opensuse_functions_define {
 		PACKAGE=$3
 		zypper info $PACKAGE | perl -MData::Dumper -e '%m = ( "Ja" => "ok installed", "Yes" => "ok installed"); while(<>){ $k{$1}=$2 if (/(\S+)\s+:\s+(\S+)/) }; print "$m{$k{Installiert}.$k{Installed}} $k{Version}"'
 	}
+
+	#apt-cache search --names-only nvidia-cg-toolkit
+	alias apt-cache=apt_cache
+
+	function apt_cache {
+		echo ""
+	}
 }
 
 function get_os_version() {

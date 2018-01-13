@@ -205,23 +205,42 @@ function zypperInstall() {
 	return $?
 }
 
+#nfcitx-devel libXi-devel libXinerama-devel libXrandr-devel libXss-devel libXt-devel libXi-devel libXext-devel libpulse-devel libXxf86vm-devel
+ 
+
 function getDepends() {
 	local packages=()
 	declare -A substitutions
 	substitutions=( \
+		["debhelper"]="ignore" \
+		["devscripts"]="ignore" \
+		["lockfile-progs"]="ignore" \
 		["g++"]="gcc-c++" \
-		["d"]="ignore" \
 		["build-essential"]="cmake make autoconf automake" \
 		["libudev-dev"]="libudev-devel" \
 		["libxkbcommon-dev"]="libxkbcommon-devel" \
-		["libasound2"]="alsa-devel" \
+		["libasound2-dev"]="alsa-devel" \
 		["libsdl2-dev"]="libSDL2-devel" \
-		["libusb-1.0-0-dev"]="libusb-1_0-devel" \
+		["libusb-1.0-0-dev"]="libusb-devel libusb-1_0-devel" \
 		["libx11-xcb-dev"]="libX11-devel" \
 		["libpulse-dev"]="libpulse-devel" \
 		["libavcodec-dev"]="libavcodec-devel" \
 		["libavformat-dev"]="libavformat-devel" \
 		["libavdevice-dev"]="libavdevice-devel" \
+		["libboost-system-dev"]="libboost_system1_66_0" \
+		["libboost-filesystem-dev"]="libboost_filesystem1_66_0-devel" \
+		["libboost-date-time-dev"]="libboost_date_time1_66_0-devel" \
+		["libfreeimage-dev"]="freeimage-devel freetype-devel" \
+		["libcurl4-openssl-dev"]="libcurl-devel libopenssl-devel" \
+		["libsm-dev"]="libSM-devel" \ 
+		["libvlc-dev"]="vlc-devel" \
+		["libvlccore-dev"]="ignore" \
+		["libpng12-dev"]="libpng12-devel" \
+		["libglew-dev"]="glew-devel glu-devel" \
+		["libglu1-mesa-dev"]="Mesa-libGL-devel Mesa-devel" \
+		["libsamplerate0-dev"]="libsamplerate-devel" \
+		["libspeexdsp-dev"]="speexdsp-devel" \
+		["libx11-dev"]="libX11-devel" \
 		# dh-autoreconf libdbus-c++-devel libXcursor-devel ibus-devel
 	)
 
