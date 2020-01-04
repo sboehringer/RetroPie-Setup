@@ -195,10 +195,11 @@ function aptRemove() {
 ## @retval 1 on failure
 
 # bootstrap os version, no lsb-release yet
-os_id_bs=`cat /etc/os-release | perl -ne 'print $1 if (m{^ID=(.*)})'`
+os_id_bs=`cat /etc/os-release | perl -ne 'print $1 if (m{^ID=["]?([^"]*)["]?})'`
 #echo "installing version of getDepends for $os_id_bs"
+echo "Detected OS: $os_id_bs"
 
-if [[ "$os_id_bs" == "opensuse" ]]; then
+if [[ "$os_id_bs" == "opensuse-leap" ]]; then
 
 alias dpkg-query=dpkg_query
 
