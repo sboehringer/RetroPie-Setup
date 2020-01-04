@@ -186,11 +186,104 @@ function aptRemove() {
     return $?
 }
 
+#
+#	getDepends
+#
+
 ## @fn getDepends()
 ## @param packages package / space separated list of packages to install
 ## @brief Installs packages if they are not installed.
 ## @retval 0 on success
 ## @retval 1 on failure
+
+# bootstrap os version, no lsb-release yet
+os_id_bs=`cat /etc/os-release | perl -ne 'print $1 if (m{^ID=["]?([^"]*)["]?})'`
+#echo "installing version of getDepends for $os_id_bs"
+echo "Detected OS: $os_id_bs"
+
+if [[ "$os_id_bs" == "opensuse-leap" ]]; then
+
+alias dpkg-query=dpkg_query
+
+function dpkg_query() {
+	PACKAGE=$3
+	zypper info $PACKAGE | perl -MData::Dumper -e '%m = ( "Ja" => "ok installed", "Yes" => "ok installed"); while(<>){ $k{$1}=$2 if (/(\S+)\s+:\s+(\S+)/) }; print "$m{$k{Installiert}.$k{Installed}} $k{Version}"'
+}
+
+#apt-cache search --names-only nvidia-cg-toolkit
+alias apt-cache=apt_cache
+
+function apt_cache {
+	echo ""
+}
+
+function zypperInstall() {
+	zypper install -y "$@"
+	return $?
+    zypper install -y "$@"
+    return $?
+}
+
+#nfcitx-devel libXi-devel libXinerama-devel libXrandr-devel libXss-devel libXt-devel libXi-devel libXext-devel libpulse-devel libXxf86vm-devel
+ 
+
+function getDepends() {
+	local packages=()
+	declare -A substitutions
+	substitutions=( \
+		["debhelper"]="ignore" \
+		["devscripts"]="ignore" \
+		["lockfile-progs"]="ignore" \
+		["g++"]="gcc-c++" \
+		["build-essential"]="cmake make autoconf automake" \
+		["libudev-dev"]="libudev-devel" \
+		["libxkbcommon-dev"]="libxkbcommon-devel" \
+		["libasound2-dev"]="alsa-devel" \
+		["libsdl2-dev"]="libSDL2-devel" \
+		["libusb-1.0-0-dev"]="libusb-1_0-devel" \
+		["libx11-xcb-dev"]="libX11-devel" \
+		["libpulse-dev"]="libpulse-devel" \
+		["libavcodec-dev"]="libavcodec-devel" \
+		["libavformat-dev"]="libavformat-devel" \
+		["libavdevice-dev"]="libavdevice-devel" \
+		["libboost-system-dev"]="libboost_system1_66_0-devel" \
+		["libboost-filesystem-dev"]="libboost_filesystem1_66_0-devel" \
+		["libboost-date-time-dev"]="libboost_date_time1_66_0-devel" \
+		["libfreeimage-dev"]="freeimage-devel" \
+		["libfreetype6-dev"]="freetype-devel" \
+		["libcurl4-openssl-dev"]="libcurl-devel libopenssl-devel" \
+		["libsm-dev"]="libSM-devel" \ 
+		["libvlc-dev"]="vlc-devel" \
+		["libvlccore-dev"]="ignore" \
+		["libpng12-dev"]="libpng12-devel" \
+		["libglew-dev"]="glew-devel glu-devel" \
+		["libglu1-mesa-dev"]="Mesa-libGL-devel Mesa-devel" \
+		["libsamplerate0-dev"]="libsamplerate-devel" \
+		["libspeexdsp-dev"]="speexdsp-devel" \
+		["libx11-dev"]="libX11-devel" \
+		["exfat-fuse"]="fuse-exfat" \
+		# dh-autoreconf libdbus-c++-devel libXcursor-devel ibus-devel
+	)
+
+	for p in $@; do
+		if [[ "${substitutions[$p]}" = "" ]]; then
+			packages+=( $p )
+		else
+		if  [[ "${substitutions[$p]}" != "ignore" ]]; then
+			# auto-split seems to happen
+			packages+=( ${substitutions[$p]} )
+		fi
+		fi
+    done
+
+	for p in ${packages[@]}; do
+		echo Installing package $p [opensuse]
+		zypperInstall $p
+	done
+}
+
+else
+
 function getDepends() {
     local required
     local packages=()
@@ -312,6 +405,7 @@ function getDepends() {
     return 0
 }
 
+fi	# if for getDepends version
 
 ## @fn rpSwap()
 ## @param command *on* to add swap if needed and *off* to remove later

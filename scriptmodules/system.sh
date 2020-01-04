@@ -85,14 +85,30 @@ function get_os_version() {
 
     # get os distributor id, description, release number and codename
     local os
-    # armbian uses a minimal shell script replacement for lsb_release with basic
-    # parameter parsing that requires the arguments split rather than using -sidrc
-    mapfile -t os < <(lsb_release -s -i -d -r -c)
-    __os_id="${os[0]}"
-    __os_desc="${os[1]}"
-    __os_release="${os[2]}"
-    __os_codename="${os[3]}"
 
+	local os_raw
+	local os_id
+	os_raw=$(lsb_release -sidrc)
+	os_id=${os_raw%% *}
+	if [[ "$os_id" == "openSUSE" ]]; then
+		IFS=' ' read -r -a os <<< "$os_raw"
+		__os_id="${os[0]}"
+		__os_desc="${os[1]}"
+		__os_release="${os[-2]}"
+		__os_codename="${os[-4]}"
+	else
+		# armbian uses a minimal shell script replacement for lsb_release with basic
+		# parameter parsing that requires the arguments split rather than using -sidrc
+		mapfile -t os < <(lsb_release -sidrc)
+		__os_id="${os[0]}"
+		__os_desc="${os[1]}"
+		__os_release="${os[2]}"
+		__os_codename="${os[3]}"
+	fi
+	echo "OS id: $__os_id"
+	echo "OS desc: $__os_desc"
+	echo "OS release: $__os_release"
+    
     local error=""
     case "$__os_id" in
         Raspbian|Debian)
@@ -199,7 +215,9 @@ function get_os_version() {
                 __os_debian_ver="10"
             fi
             ;;
-        *)
+		openSUSE)
+			;;
+		*)
             error="Unsupported OS"
             ;;
     esac

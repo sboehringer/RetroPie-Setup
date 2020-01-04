@@ -14,3 +14,8 @@ scriptdir="$(cd "$scriptdir" && pwd)"
 
 "$scriptdir/retropie_packages.sh" setup gui
 
+#
+#	<p> suse changes
+#
+
+#zypper info perl-base | perl -MData::Dumper -e 'while(<>){ $k{$1}=$2 if (/(\S+)\s+:\s+(\S+)/) } '

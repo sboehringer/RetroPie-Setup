@@ -25,7 +25,7 @@ if [[ -n "$__user" ]]; then
     fi
 else
     user="$SUDO_USER"
-    [[ -z "$user" ]] && user="$(id -un)"
+	[[ -z "$user" ]] && user="$(id -un)"
 fi
 
 home="$(eval echo ~$user)"
