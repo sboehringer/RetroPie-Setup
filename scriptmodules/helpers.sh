@@ -218,10 +218,8 @@ function apt_cache {
 }
 
 function zypperInstall() {
-	zypper install -y "$@"
+	zypper install -y $@
 	return $?
-    zypper install -y "$@"
-    return $?
 }
 
 #nfcitx-devel libXi-devel libXinerama-devel libXrandr-devel libXss-devel libXt-devel libXi-devel libXext-devel libpulse-devel libXxf86vm-devel
@@ -262,8 +260,9 @@ function getDepends() {
 		["libspeexdsp-dev"]="speexdsp-devel" \
 		["libx11-dev"]="libX11-devel" \
 		["exfat-fuse"]="fuse-exfat" \
-		# dh-autoreconf libdbus-c++-devel libXcursor-devel ibus-devel
+		["python-pudev"]="python3-pyudev"
 	)
+	# dh-autoreconf libdbus-c++-devel libXcursor-devel ibus-devel
 
 	for p in $@; do
 		if [[ "${substitutions[$p]}" = "" ]]; then
@@ -276,10 +275,15 @@ function getDepends() {
 		fi
     done
 
-	for p in ${packages[@]}; do
-		echo Installing package $p [opensuse]
-		zypperInstall $p
-	done
+	#for p in ${packages[@]}; do
+	#	echo Installing package $p [opensuse]
+	#	zypperInstall $p
+	#done
+	#echo ${packages[*]}
+	zypperInstall ${packages[*]}
+# 	if [[ ${#packages[*]} > 1 ]]; then
+# 		exit 0
+# 	fi
 }
 
 else
